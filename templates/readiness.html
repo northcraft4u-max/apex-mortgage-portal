@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}Mortgage Pre-Approval Readiness Tracker | Apex Lending Group{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container" style="max-width: 920px;">
+    <div class="text-center mb-4">
+      <span class="badge bg-success mb-2">Underwriting Readiness Tool</span>
+      <h1 class="display-5 fw-bold text-gradient-gold">12-Point Pre-Approval Readiness Tracker</h1>
+      <p class="text-secondary small">Check off completed items below to calculate your file readiness score and copy a status report for your broker.</p>
+    </div>
+
+    <div class="apex-card p-4 mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="fw-bold text-light">Underwriting File Completion</span>
+        <span class="fw-bold text-warning" id="readinessScoreText">0 / 12 Completed (0%)</span>
+      </div>
+      <div class="progress" style="height: 22px; background-color: #0a101d; border-radius: 10px;">
+        <div id="readinessBar" class="progress-bar bg-success fw-bold" role="progressbar" style="width: 0%;">0%</div>
+      </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+      <div class="col-md-6">
+        <div class="apex-card p-4 h-100">
+          <h5 class="fw-bold text-warning mb-3">1. Income & Tax Verification</h5>
+          <div class="d-grid gap-2 small">
+            <label class="d-flex align-items-center gap-2"><input type="checkbox" class="form-check-input readiness-cb" /> Last 30 days of recent pay stubs</label>
+            <label class="d-flex align-items-center gap-2"><input type="checkbox" class="form-check-input readiness-cb" /> Signed Letter of Employment (dated within 30 days)</label>
+            <label class="d-flex align-items-center gap-2"><input type="checkbox" class="form-check-input readiness-cb" /> Past 2 years T4 slips & T1 Generals</label>
+            <label class="d-flex align-items-center gap-2"><input type="checkbox" class="form-check-input readiness-cb" /> Past 2 years CRA Notices of Assessment ($0 owing)</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="apex-card p-4 h-100">
+          <h5 class="fw-bold text-warning mb-3">2. Down Payment & Credit Profile</h5>
+          <div class="d-grid gap-2 small">
+            <label class="d-flex align-items-center gap-2"><input type="checkbox" class="form-check-input readiness-cb" /> 90-day bank/investment statements showing full trail</label>
+            <label class="d-flex align-items-center gap-2"><input type="checkbox" class="form-check-input readiness-cb" /> FHSA / RRSP Home Buyers' Plan statements ready</label>
+            <label class="d-flex align-items-center gap-2"><input type="checkbox" class="form-check-input readiness-cb" /> Signed gift letter (if using immediate family gift)</label>
+            <label class="d-flex align-items-center gap-2"><input type="checkbox" class="form-check-input readiness-cb" /> Credit bureau check authorized (680+ target score)</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <div class="apex-card p-4">
+          <h5 class="fw-bold text-success mb-3">3. Property & Closing Readiness</h5>
+          <div class="row g-2 small">
+            <div class="col-md-6"><label class="d-flex align-items-center gap-2"><input type="checkbox" class="form-check-input readiness-cb" /> Government photo ID (Driver's Licence / Passport)</label></div>
+            <div class="col-md-6"><label class="d-flex align-items-center gap-2"><input type="checkbox" class="form-check-input readiness-cb" /> 1.5% closing cost reserve set aside (Land Transfer Tax + Legal)</label></div>
+            <div class="col-md-6"><label class="d-flex align-items-center gap-2"><input type="checkbox" class="form-check-input readiness-cb" /> Ontario real estate lawyer selected</label></div>
+            <div class="col-md-6"><label class="d-flex align-items-center gap-2"><input type="checkbox" class="form-check-input readiness-cb" /> 120-day rate hold locked with Apex Lending Group</label></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex flex-wrap gap-3">
+      <button type="button" id="copyReadinessBtn" class="btn btn-gold">Copy Readiness Report to Clipboard</button>
+      <a data-spa href="{{ url_for('vault') }}" class="btn btn-dark-outline">Upload Checked Documents to Secure Vault →</a>
+    </div>
+    <div id="readinessCopyStatus" class="small text-success mt-2"></div>
+  </div>
+
+  <script>
+    (() => {
+      const checkboxes = Array.from(document.querySelectorAll(".readiness-cb"));
+      const bar = document.getElementById("readinessBar");
+      const scoreText = document.getElementById("readinessScoreText");
+      const copyBtn = document.getElementById("copyReadinessBtn");
+      const copyStatus = document.getElementById("readinessCopyStatus");
+
+      function updateBar() {
+        const done = checkboxes.filter((c) => c.checked).length;
+        const total = checkboxes.length;
+        const pct = Math.round((done / total) * 100);
+        bar.style.width = pct + "%";
+        bar.textContent = pct + "%";
+        scoreText.textContent = `${done} / ${total} Completed (${pct}%)`;
+      }
+
+      checkboxes.forEach((cb) => cb.addEventListener("change", updateBar));
+
+      copyBtn.addEventListener("click", () => {
+        const doneItems = checkboxes.filter((c) => c.checked).map((c) => "[x] " + c.parentElement.textContent.trim());
+        const openItems = checkboxes.filter((c) => !c.checked).map((c) => "[ ] " + c.parentElement.textContent.trim());
+        const summary = [
+          "APEX LENDING GROUP — PRE-APPROVAL READINESS SUMMARY",
+          scoreText.textContent,
+          "----------------------------------------------------",
+          ...doneItems,
+          ...openItems,
+        ].join("\n");
+        navigator.clipboard.writeText(summary);
+        copyStatus.textContent = "Readiness checklist copied to clipboard — ready to email or text your broker!";
+      });
+    })();
+  </script>
+</section>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Book a 120-Day Rate Hold & Pre-Approval Call | Apex Lending Group{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container" style="max-width: 740px;">
+    <div class="text-center mb-4">
+      <span class="badge bg-warning text-dark mb-2">No Credit Impact Discovery Call</span>
+      <h1 class="display-5 fw-bold text-gradient-gold">Lock In Your 120-Day Rate Hold</h1>
+      <p class="text-secondary small">Speak directly with an Ontario Licensed Mortgage Agent within 2 business hours.</p>
+    </div>
+
+    <div class="apex-card p-4 p-md-5">
+      <form action="{{ url_for('book') }}" method="POST">
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label class="form-label small">Full Name</label>
+            <input type="text" name="full_name" class="form-control form-control-apex" placeholder="Vikram Malhotra" required />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small">Email Address</label>
+            <input type="email" name="email" class="form-control form-control-apex" placeholder="vikram.m@email.ca" required />
+          </div>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label class="form-label small">Mobile Phone (SMS Updates)</label>
+            <input type="text" name="phone" class="form-control form-control-apex" placeholder="416-555-0188" required />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small">Target City / Region</label>
+            <select name="city" class="form-select form-select-apex">
+              <option>Brampton / Caledon</option>
+              <option>Mississauga / Oakville</option>
+              <option>Toronto / Vaughan / Markham</option>
+              <option>Other Ontario Municipality</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label small">Mortgage Goal</label>
+          <select name="goal" class="form-select form-select-apex">
+            <option>First-Time Home Purchase Pre-Approval</option>
+            <option>Mortgage Renewal / Lender Switch (Beat Bank Rate)</option>
+            <option>Refinance / Home Equity Line of Credit (HELOC)</option>
+            <option>Self-Employed / Investment Property Financing</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn btn-gold btn-lg w-100">Confirm Rate-Hold Consultation</button>
+      </form>
+
+      {% if confirmation %}
+        {% if confirmation.error %}
+          <div class="alert alert-danger mt-4 mb-0 small">{{ confirmation.error }}</div>
+        {% else %}
+          <div class="p-4 rounded-3 mt-4" style="background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.45);">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h5 class="fw-bold text-success mb-0">Pre-Approval File Initialized</h5>
+              <span class="badge bg-dark text-warning border border-warning">{{ confirmation.ref }}</span>
+            </div>
+            <p class="small text-light mb-1">
+              Thank you, <strong>{{ confirmation.full_name }}</strong>. Your consultation for <strong>{{ confirmation.goal }}</strong> ({{ confirmation.city }}) has been assigned to a Senior Ontario Mortgage Advisor.
+            </p>
+            <div class="small text-secondary">Confirmation & secure upload link sent to {{ confirmation.email }} ({{ confirmation.phone }}).</div>
+          </div>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

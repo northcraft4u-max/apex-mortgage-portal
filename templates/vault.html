@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Secure Client Document Vault & 3-Pass Shredder | Apex Lending Group{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container" style="max-width: 840px;">
+    <div class="text-center mb-4">
+      <span class="badge bg-info text-dark mb-2">Zero-Retention Privacy Architecture</span>
+      <h1 class="display-5 fw-bold text-gradient-gold">Client Document Staging & 3-Pass File Shredder</h1>
+      <p class="text-secondary small">
+        Stage sensitive tax/income documents for underwriting review, then permanently overwrite every byte with random data before deletion.
+      </p>
+    </div>
+
+    {% if notice %}
+      <div class="alert alert-{{ notice_type }} mb-4 small">{{ notice }}</div>
+    {% endif %}
+
+    <div class="row g-4 mb-4">
+      <div class="col-md-7">
+        <div class="apex-card p-4 h-100">
+          <h5 class="fw-bold text-white mb-2">1. Stage Verification File</h5>
+          <p class="text-secondary small mb-3">Upload a test PDF, CSV, or image (max 10 MB) into the temporary staging vault.</p>
+          <form action="{{ url_for('vault') }}" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="action" value="upload" />
+            <input type="file" name="client_doc" class="form-control form-control-apex mb-3" required />
+            <button type="submit" class="btn btn-gold w-100">Upload to Staged Vault</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="col-md-5">
+        <div class="apex-card p-4 h-100 d-flex flex-column justify-content-between">
+          <div>
+            <h5 class="fw-bold text-warning mb-2">Quick Demo File</h5>
+            <p class="text-secondary small">Don't have a dummy file handy? Generate a sample T4 income file to test the 3-pass shredder.</p>
+          </div>
+          <form action="{{ url_for('vault') }}" method="POST">
+            <input type="hidden" name="action" value="create_sample" />
+            <button type="submit" class="btn btn-dark-outline w-100">+ Generate Sample T4 File</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="apex-card p-4">
+      <h5 class="fw-bold text-white mb-3">2. Active Staged Files ({{ files|length }})</h5>
+      {% if files %}
+        <div class="d-grid gap-2">
+          {% for f in files %}
+            <div class="p-3 rounded-3 d-flex flex-wrap justify-content-between align-items-center gap-2" style="background:#0a101d;border:1px solid rgba(148,163,184,0.2);">
+              <div>
+                <strong class="text-light">{{ f.name }}</strong>
+                <span class="badge bg-secondary ms-2">{{ f.size_kb }} KB</span>
+              </div>
+              <form action="{{ url_for('vault') }}" method="POST" class="m-0">
+                <input type="hidden" name="action" value="shred" />
+                <input type="hidden" name="filename" value="{{ f.name }}" />
+                <button type="submit" class="btn btn-danger btn-sm fw-bold">3-Pass Shred & Purge</button>
+              </form>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="text-secondary small">Vault is currently clean (0 files stored on disk).</div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

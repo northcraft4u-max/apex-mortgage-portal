@@ -1,0 +1,76 @@
+/* Fluid Headlines */
+.display-4 {
+  font-size: clamp(1.9rem, 4.4vw, 3.2rem);
+  line-height: 1.15;
+}
+
+.display-5 {
+  font-size: clamp(1.65rem, 3.8vw, 2.7rem);
+  line-height: 1.18;
+}
+
+.display-6 {
+  font-size: clamp(1.4rem, 3vw, 2.2rem);
+}
+
+/* Tablet & Collapsed Nav (<= 1199.98px for 7-item navbar) */
+@media (max-width: 1199.98px) {
+  .navbar-collapse {
+    background: #0b1120;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 14px;
+    padding: 1rem;
+    margin-top: 0.85rem;
+  }
+
+  .nav-pill {
+    display: block;
+    width: 100%;
+    padding: 0.7rem 1rem;
+    font-size: 0.98rem;
+  }
+
+  .navbar-nav .btn-gold {
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-top: 0.45rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .apex-card:hover,
+  .btn-gold:hover,
+  .btn-dark-outline:hover {
+    transform: none;
+  }
+}
+
+/* Mobile Screens (<= 767.98px) */
+@media (max-width: 767.98px) {
+  section.py-5 {
+    padding-top: 2.3rem !important;
+    padding-bottom: 2.3rem !important;
+  }
+
+  .btn-lg {
+    width: 100%;
+    padding: 0.82rem 1.2rem;
+    font-size: 1rem;
+  }
+
+  .apex-card {
+    border-radius: 14px;
+    padding: 1.25rem !important;
+  }
+
+  /* Prevent iOS Safari auto-zoom on input focus */
+  .form-control-apex,
+  .form-select-apex {
+    font-size: 16px;
+  }
+
+  footer .container {
+    flex-direction: column;
+    text-align: center;
+  }
+}

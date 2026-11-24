@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}Canadian Mortgage, CMHC & Global FX Calculators | Apex Lending Group{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <div class="text-center mb-4">
+      <span class="badge bg-warning text-dark mb-2">Live Financial Calculators</span>
+      <h1 class="display-5 fw-bold text-gradient-gold">Mortgage Payment & Global Down-Payment Converter</h1>
+      <p class="text-secondary small">Calculate 25-year Canadian monthly payments + CMHC insurance alongside live international FX conversion.</p>
+    </div>
+
+    <form action="{{ url_for('calculators') }}" method="POST">
+      <div class="row g-4">
+        <!-- Left Column: Canadian Mortgage & CMHC Calculator -->
+        <div class="col-lg-6">
+          <div class="apex-card p-4 h-100">
+            <h4 class="fw-bold text-warning mb-1">1. Canadian Mortgage & CMHC Estimator</h4>
+            <p class="text-secondary small mb-3">Enforces Ontario minimum down-payment tiers automatically.</p>
+
+            <div class="mb-3">
+              <label class="form-label small">Property Price (CAD $)</label>
+              <input type="text" name="home_price" class="form-control form-control-apex" value="{{ home_price }}" required />
+            </div>
+            <div class="mb-3">
+              <label class="form-label small">Down Payment (CAD $)</label>
+              <input type="text" name="down_payment" class="form-control form-control-apex" value="{{ down_payment }}" required />
+            </div>
+            <div class="mb-4">
+              <label class="form-label small">Annual Interest Rate (%)</label>
+              <input type="text" name="interest_rate" class="form-control form-control-apex" value="{{ interest_rate }}" required />
+            </div>
+
+            <button type="submit" class="btn btn-gold w-100 mb-3">Recalculate Payment & Live FX</button>
+
+            {% if mtg_result.error %}
+              <div class="alert alert-danger mb-0 small">{{ mtg_result.error }}</div>
+            {% else %}
+              <div class="p-3 rounded-3" style="background:#0a101d;border:1px solid rgba(245,158,11,0.4);">
+                <div class="small text-secondary text-uppercase">Estimated Monthly Payment (25-Yr)</div>
+                <div class="display-6 fw-bold text-warning mb-2">{{ mtg_result.monthly_payment }}<span class="fs-6 text-secondary">/mo</span></div>
+                <div class="d-flex justify-content-between small text-light border-top border-secondary pt-2">
+                  <span>Down: <strong>{{ mtg_result.down_pct }}</strong></span>
+                  <span>CMHC: <strong>{{ mtg_result.cmhc_fee }}</strong></span>
+                  <span>Total: <strong>{{ mtg_result.total_mortgage }}</strong></span>
+                </div>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Right Column: Live Multi-Currency Down Payment Converter -->
+        <div class="col-lg-6">
+          <div class="apex-card p-4 h-100">
+            <h4 class="fw-bold text-success mb-1">2. International Buyer FX Converter</h4>
+            <p class="text-secondary small mb-3">Live mid-market rates for newcomer & overseas down-payment transfers.</p>
+
+            <div class="mb-3">
+              <label class="form-label small">Transfer Amount</label>
+              <input type="text" name="fx_amount" class="form-control form-control-apex" value="{{ fx_amount }}" required />
+            </div>
+
+            <div class="row g-3 mb-4">
+              <div class="col-6">
+                <label class="form-label small">From Currency</label>
+                <select name="fx_from" class="form-select form-select-apex">
+                  {% for code in ["USD", "AED", "INR", "GBP", "EUR", "CAD"] %}
+                    <option value="{{ code }}" {% if fx_from == code %}selected{% endif %}>{{ code }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label small">To Currency</label>
+                <select name="fx_to" class="form-select form-select-apex">
+                  {% for code in ["CAD", "USD", "AED", "INR", "GBP", "EUR"] %}
+                    <option value="{{ code }}" {% if fx_to == code %}selected{% endif %}>{{ code }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-dark-outline w-100 mb-3">Fetch Live Mid-Market Rate</button>
+
+            {% if fx_result.error %}
+              <div class="alert alert-danger mb-0 small">{{ fx_result.error }}</div>
+            {% else %}
+              <div class="p-3 rounded-3" style="background:#0a101d;border:1px solid rgba(16,185,129,0.4);">
+                <div class="small text-secondary text-uppercase">Converted Down-Payment Value</div>
+                <div class="display-6 fw-bold text-success mb-2">{{ fx_result.converted_amt }}</div>
+                <div class="small text-light border-top border-secondary pt-2">
+                  Live FX Benchmark: <strong>{{ fx_result.rate }}</strong> ({{ fx_result.source_amt }})
+                </div>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}

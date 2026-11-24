@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Pre-Approval & Renewal Outreach Generator | Apex Lending Group{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container" style="max-width: 780px;">
+    <div class="text-center mb-4">
+      <span class="badge bg-info text-dark mb-2">Broker & Realtor Automation Tool</span>
+      <h1 class="display-5 fw-bold text-gradient-gold">Pre-Approval & Renewal Letter Generator</h1>
+      <p class="text-secondary small">Generate instant Realtor Offer-Night Verification Letters or Client Renewal-Savings Scripts.</p>
+    </div>
+
+    <div class="apex-card p-4 p-md-5">
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label class="form-label small">Template Type</label>
+          <select id="templateType" class="form-select form-select-apex">
+            <option value="realtor">Realtor Offer-Night Pre-Approval Verification</option>
+            <option value="renewal">6-Month Mortgage Renewal Rate-Hold Outreach</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label small">Client Full Name</label>
+          <input type="text" id="clientName" class="form-control form-control-apex" placeholder="e.g., Arjun & Neha Sharma" />
+        </div>
+      </div>
+
+      <div class="row g-3 mb-4">
+        <div class="col-md-6">
+          <label class="form-label small">Approved Amount / Current Balance (CAD)</label>
+          <input type="text" id="approvedAmt" class="form-control form-control-apex" placeholder="e.g., $920,000" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label small">Realtor Name or Target Municipality</label>
+          <input type="text" id="partnerField" class="form-control form-control-apex" placeholder="e.g., Brampton / Peel Region" />
+        </div>
+      </div>
+
+      <button type="button" id="generateLetterBtn" class="btn btn-gold w-100 mb-4">Generate & Copy Message</button>
+
+      <label class="form-label small text-warning fw-semibold">Generated Message Preview:</label>
+      <pre id="letterOutput" class="p-3 rounded-3 text-light small mb-2" style="background:#0a101d;border:1px solid rgba(148,163,184,0.25);white-space:pre-wrap;min-height:150px;">Fill in the fields above and click "Generate & Copy Message"...</pre>
+      <div id="letterStatus" class="small text-success"></div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const btn = document.getElementById("generateLetterBtn");
+      const out = document.getElementById("letterOutput");
+      const status = document.getElementById("letterStatus");
+
+      btn.addEventListener("click", () => {
+        const mode = document.getElementById("templateType").value;
+        const client = document.getElementById("clientName").value.trim() || "Valued Client";
+        const amount = document.getElementById("approvedAmt").value.trim() || "$850,000 CAD";
+        const area = document.getElementById("partnerField").value.trim() || "the Greater Toronto Area";
+
+        let text = "";
+        if (mode === "realtor") {
+          text =
+            `RE: MORTGAGE PRE-APPROVAL VERIFICATION — ${client.toUpperCase()}\n\n` +
+            `To Whom It May Concern,\n\n` +
+            `This letter confirms that ${client} has completed income, credit, and down-payment verification with Apex Lending Group for a purchase up to ${amount} in ${area}.\n\n` +
+            `A 120-day wholesale rate hold is active, and our underwriting desk is standing by for immediate firm-financing review once an Agreement of Purchase and Sale is accepted.`;
+        } else {
+          text =
+            `Hi ${client},\n\n` +
+            `With your ${amount} mortgage in ${area} approaching renewal within the next 180 days, banks typically send higher posted renewal rates first.\n\n` +
+            `We can lock in a wholesale 120-day rate hold today at no cost—and cover standard legal/appraisal switch fees if another lender beats your bank's offer. Would a quick 10-minute review this week work for you?`;
+        }
+
+        out.textContent = text;
+        navigator.clipboard.writeText(text);
+        status.textContent = "Message generated and copied to clipboard!";
+      });
+    })();
+  </script>
+</section>
+{% endblock %}
